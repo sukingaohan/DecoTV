@@ -69,6 +69,7 @@ export const UserMenu: React.FC = () => {
   const [playerBufferMode, setPlayerBufferMode] = useState<
     'standard' | 'enhanced' | 'max'
   >('standard');
+  const [enableVirtualScroll, setEnableVirtualScroll] = useState(true);
   const [doubanDataSource, setDoubanDataSource] = useState(
     'cmliussss-cdn-tencent',
   );
@@ -241,6 +242,12 @@ export const UserMenu: React.FC = () => {
         savedBufferMode === 'max'
       ) {
         setPlayerBufferMode(savedBufferMode);
+      }
+
+      // 读取虚拟滚动设置
+      const savedVirtualScroll = localStorage.getItem('enableVirtualScroll');
+      if (savedVirtualScroll !== null) {
+        setEnableVirtualScroll(JSON.parse(savedVirtualScroll));
       }
     }
   }, []);
@@ -421,6 +428,13 @@ export const UserMenu: React.FC = () => {
     setLiveDirectConnect(value);
     if (typeof window !== 'undefined') {
       localStorage.setItem('liveDirectConnect', JSON.stringify(value));
+    }
+  };
+
+  const handleVirtualScrollToggle = (value: boolean) => {
+    setEnableVirtualScroll(value);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('enableVirtualScroll', JSON.stringify(value));
     }
   };
 
@@ -1014,6 +1028,32 @@ export const UserMenu: React.FC = () => {
                     checked={liveDirectConnect}
                     onChange={(e) =>
                       handleLiveDirectConnectToggle(e.target.checked)
+                    }
+                  />
+                  <div className='w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-green-500 transition-colors dark:bg-gray-600'></div>
+                  <div className='absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform peer-checked:translate-x-5'></div>
+                </div>
+              </label>
+            </div>
+
+            {/* 虚拟滚动（性能模式）开关 */}
+            <div className='flex items-center justify-between'>
+              <div>
+                <h4 className='text-sm font-medium text-gray-700 dark:text-gray-300'>
+                  虚拟滚动（性能模式）
+                </h4>
+                <p className='text-xs text-gray-500 dark:text-gray-400 mt-1'>
+                  关闭后使用普通滚动，如遇滚动问题可尝试关闭
+                </p>
+              </div>
+              <label className='flex items-center cursor-pointer'>
+                <div className='relative'>
+                  <input
+                    type='checkbox'
+                    className='sr-only peer'
+                    checked={enableVirtualScroll}
+                    onChange={(e) =>
+                      handleVirtualScrollToggle(e.target.checked)
                     }
                   />
                   <div className='w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-green-500 transition-colors dark:bg-gray-600'></div>
